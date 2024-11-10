@@ -1,0 +1,94 @@
+from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+from PIL import Image, ImageTk
+import mysql.connector
+
+class Register:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Register")
+        self.root.geometry("1600x900+140+65")
+
+        # Background image
+        self.bg = ImageTk.PhotoImage(file=r"D:\Chatbot\Images\white_image.jpg")
+        lbl_bg = Label(self.root, image=self.bg)
+        lbl_bg.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Frame for the form
+        self.frame = Frame(self.root, bg="black")
+        self.frame.place(x=200, y=150, width=800, height=600)
+
+        # Create form fields
+        self.create_form(self.frame)
+
+    def create_form(self, frame):
+        # Username field
+        username_label = Label(frame, text="Username", font=("Arial", 14, "bold"), fg="white", bg="black")
+        username_label.place(x=50, y=50)
+        self.username_entry = Entry(frame, width=30, fg='black', bg='white', font=("Arial", 14))
+        self.username_entry.place(x=200, y=50)
+        
+        # Password field
+        password_label = Label(frame, text="Password", font=("Arial", 14, "bold"), fg="white", bg="black")
+        password_label.place(x=50, y=100)
+        self.password_entry = Entry(frame, width=30, fg='black', bg='white', font=("Arial", 14), show='*')
+        self.password_entry.place(x=200, y=100)
+
+        # Contact No field
+        contact_label = Label(frame, text="Contact No", font=("Arial", 14, "bold"), fg="white", bg="black")
+        contact_label.place(x=50, y=150)
+        self.contact_entry = Entry(frame, width=30, fg='black', bg='white', font=("Arial", 14))
+        self.contact_entry.place(x=200, y=150)
+
+        # Email ID field
+        email_label = Label(frame, text="Email ID", font=("Arial", 14, "bold"), fg="white", bg="black")
+        email_label.place(x=50, y=200)
+        self.email_entry = Entry(frame, width=30, fg='black', bg='white', font=("Arial", 14))
+        self.email_entry.place(x=200, y=200)
+
+        # Address field
+        address_label = Label(frame, text="Address", font=("Arial", 14, "bold"), fg="white", bg="black")
+        address_label.place(x=50, y=250)
+        self.address_entry = Entry(frame, width=30, fg='black', bg='white', font=("Arial", 14))
+        self.address_entry.place(x=200, y=250)
+
+        # Register button
+        register_button = Button(frame, text="Register", fg="white", bg='black', width=15, height=2, font=("Georgia", 12, "bold"), command=self.register)
+        register_button.place(x=200, y=300)
+
+    def register(self):
+        # Get form data
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+        contact = self.contact_entry.get()
+        email = self.email_entry.get()
+        address = self.address_entry.get()
+
+        # Validate the data
+        if not all([username, password, contact, email, address]):
+            messagebox.showerror("Error", "All fields are required")
+            return
+
+        try:
+            connection = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="your_db_password",
+                database="chatbot_db"
+            )
+            cursor = connection.cursor()
+            cursor.execute(
+                "INSERT INTO users (username, password, contact, email, address) VALUES (%s, %s, %s, %s, %s)",
+                (username, password, contact, email, address)
+            )
+            connection.commit()
+            connection.close()
+            messagebox.showinfo("Success", "Registration successful")
+        except mysql.connector.Error as err:
+            messagebox.showerror("Error", f"Error connecting to the database: {err}")
+
+if __name__ == "__main__":
+    root = Tk()
+    app = Register(root)
+    root.mainloop()

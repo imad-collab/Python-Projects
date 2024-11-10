@@ -1,0 +1,100 @@
+from tkinter import *
+
+class Chatbot:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Chatbot Application")
+        self.root.geometry("600x400+300+100")
+
+        # Create a Main Frame (White Color)
+        main_frame = Frame(self.root, bg="white", width=600, height=400)
+        main_frame.pack(fill=BOTH, expand=True)
+
+        # Label for user input
+        lbl_1_ = Label(main_frame, text="Type Something", width=20, height=2, fg='green', bg='white', font=('Arial', 14, 'bold'))
+        lbl_1_.place(x=150, y=50)
+
+        # Entry for user input
+        self.Entry_1_ = Entry(main_frame, width=28, fg='black', bg='white', borderwidth=2, font=('Arial', 14, 'bold'))
+        self.Entry_1_.insert(0, "Hello")  # Inserting default text
+        self.Entry_1_.place(x=150, y=100)
+
+        # Create a button for manual entry
+        self.manual_button = Button(main_frame, text="Manual Entry", height=2, width=20, bg="blue", fg="white", command=self.manual_entry)
+        self.manual_button.place(x=150, y=150)
+
+        # Create a text widget for displaying conversation
+        self.text = Text(main_frame, width=50, height=10, wrap=WORD)
+        self.text.place(x=50, y=200)
+        self.text.config(state=DISABLED)  # Make the text widget read-only
+
+        # Add scroll bar
+        scrollbar = Scrollbar(main_frame, orient=VERTICAL, command=self.text.yview)
+        scrollbar.place(x=550, y=200, height=160)
+        self.text.config(yscrollcommand=scrollbar.set)
+
+        # Initialize conversation
+        self.conversation_data = []
+
+        # Define the intents
+        self.intents = {
+            "greeting": {
+                "patterns": ["hi", "how are you", "is anyone there?", "hello", "good day", "whats up"],
+                "responses": ["Hello!", "Good to see you again!", "Hi there, how can I help?"],
+                "context_set": ""
+            },
+            "goodbye": {
+                "patterns": ["cya", "see you later", "goodbye", "i am leaving", "have a good day"],
+                "responses": ["Sad to see you go :(", "Talk to you later", "Goodbye!"],
+                "context_set": ""
+            },
+            "age": {
+                "patterns": ["how old", "how old is tim", "what is your age", "how old are you", "age?"],
+                "responses": ["I am 18 years old!", "18 years young!"],
+                "context_set": ""
+            },
+            "name": {
+                "patterns": ["what is your name", "what should i call you", "whats your name?"],
+                "responses": ["You can call me Tim.", "I'm Tim!", "I'm Tim aka Tech With Tim."],
+                "context_set": ""
+            },
+            "shop": {
+                "patterns": ["id like to buy something", "whats on the menu", "what do you recommend?", "could i get something to eat"],
+                "responses": ["We sell chocolate chip cookies for $2!", "Cookies are on the menu!"],
+                "context_set": ""
+            },
+            "hours": {
+                "patterns": ["when are you guys open", "what are your hours", "hours of operation"],
+                "responses": ["We are open 7am-4pm Monday-Friday!"],
+                "context_set": ""
+            }
+        }
+
+    def manual_entry(self):
+        # Get text from Entry_1_
+        user_input = self.Entry_1_.get()
+
+        # Initialize bot_response
+        bot_response = "Sorry, I don't understand."
+
+        # Check for matching intent
+        for intent, data in self.intents.items():
+            if user_input.lower() in data["patterns"]:
+                bot_response = data["responses"][0]  # Get the first response
+                break
+
+        # Append the conversation to the data
+        self.conversation_data.append({"user": user_input, "bot": bot_response})
+
+        # Display manual entry in the text widget
+        self.text.config(state=NORMAL)
+        self.text.delete(1.0, END)  # Clear previous conversation
+        for entry in self.conversation_data:
+            self.text.insert(END, f"You: {entry['user']}\n")
+            self.text.insert(END, f"Bot: {entry['bot']}\n\n")
+        self.text.config(state=DISABLED)
+
+if __name__ == "__main__":
+    root = Tk()
+    mb = Chatbot(root)
+    root.mainloop()
