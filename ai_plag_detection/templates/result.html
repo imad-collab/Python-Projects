@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detection Result</title>
+</head>
+<body>
+
+    <h2>Detection Result</h2>
+    {% if result.label %}
+        <p><strong>Label:</strong> {{ result.label }}</p>
+        <p><strong>Confidence:</strong> {{ result.confidence }}</p>
+    {% else %}
+        <p>No detection possible</p>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Text Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <h2>Detect AI-Generated Text</h2>
+
+    <form action="{{ url_for('detect') }}" method="POST">
+        <textarea name="text" rows="5" cols="50" placeholder="Paste text here..."></textarea><br>
+        <button type="submit">Detect</button>
+    </form>
+
+</body>
+</html>
